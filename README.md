@@ -215,6 +215,11 @@ The **footer** holds a live status line (what is loaded, the output size, the ac
 warnings such as a crop box hanging off the photo), a quiet **How to use** card with the shortcuts, and a **Credits**
 card with the author's contact details.
 
+On **phones** (narrow screens, or short touch screens) the same page switches layout: the brand and the action buttons sit at
+the top, the photo gets the whole work area, and a strip of the main controls (Shape, Ratio, Frame, Rotate) sits above the
+footer. Pressing one pops up its options in a card above the strip; the view glides clear of the card without changing the
+crop. In the Rotate options, click the angle number to type an exact value.
+
 ### Keyboard
 
 | Key | Action |

@@ -81,3 +81,45 @@
   document.addEventListener("pointerdown", (e) => { if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) set(false); });
   addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { set(false); btn.focus(); } });
 })();
+
+// Phone layout controller: measures the bars so the canvas fits between them, and runs the control strip and its pop-up.
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const root = document.documentElement, mq = matchMedia(MOBILE_Q), body = document.body;
+  const topbar = document.querySelector(".topbar"), bar = $("statusbar"), tool = $("m-toolbar"), docks = $("docks");
+  const isOpen = () => body.classList.contains("sheet-open");
+  const measure = () => {
+    root.style.setProperty("--m-top", topbar.offsetHeight + "px");
+    root.style.setProperty("--m-bot", bar.offsetHeight + "px");
+    root.style.setProperty("--m-tool", (mq.matches && !tool.hidden ? tool.offsetHeight : 0) + "px");
+    setInset(mq.matches && isOpen() ? docks.offsetHeight + 16 : 0);   // + the gap above the strip; the view glides clear of the pop-up
+  };
+  const ro = new ResizeObserver(measure);
+  [topbar, bar, tool, docks].forEach((el) => ro.observe(el));
+  new MutationObserver(measure).observe(tool, { attributes: true, attributeFilter: ["hidden"] });
+  mq.addEventListener("change", () => { if (!mq.matches) { setPanel(null); setInset(0, false); } measure(); });
+
+  /* Open the pop-up for one control (or close it with null); its tail points at the pressed button. */
+  function setPanel(tab) {
+    const open = !!tab;
+    body.classList.toggle("sheet-open", open);
+    if (open) { docks.dataset.tab = tab; closeExportPop(); }   // one panel at a time on a small screen
+    [...tool.querySelectorAll("button[data-tab]")].forEach((x) => x.setAttribute("aria-pressed", String(open && x.dataset.tab === tab)));
+    const btn = open && tool.querySelector(`button[data-tab="${tab}"]`);
+    if (btn) {
+      const r = btn.getBoundingClientRect();
+      docks.style.setProperty("--caret-x", Math.round(r.left + r.width / 2 - 10) + "px");   // docks sits 10px in from the left edge
+    }
+    measure();
+  }
+  tool.addEventListener("click", (e) => {
+    const t = e.target.closest("button[data-tab]");
+    if (!t) return;
+    setPanel(isOpen() && docks.dataset.tab === t.dataset.tab ? null : t.dataset.tab);   // pressing the active one closes it
+  });
+  $("export-btn").addEventListener("click", () => { if (isOpen()) setPanel(null); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen()) setPanel(null); });
+  $("m-fit").addEventListener("click", () => $("fit-btn").click());
+  $("m-fill").addEventListener("click", () => $("fill-btn").click());
+  measure();
+})();

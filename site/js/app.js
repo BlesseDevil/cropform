@@ -20,7 +20,7 @@ const docks   = $("docks");
 const zoombar = $("zoombar");
 const emptyEl = $("empty");
 
-const APP_VERSION = "v0.3.1";
+const APP_VERSION = "v0.3.2";
 
 /* ---------------------------------------------------------------------------
    BRAND LINKS — fill these in to activate the brand menu items. Left empty,
@@ -75,6 +75,7 @@ const S = {
 
   filenameEdited: false,   // true once the user types their own file name
 
+  inset: 0,      // bottom strip of the canvas covered by a phone pop-up (animated); the box centres in what is left
   rel: 0,        // photo rotation relative to the box, radians
   view: 0,       // box rotation on screen (the whole scene is drawn rotated by this), radians
   govt: null,    // active government-form preset, or null
@@ -241,7 +242,10 @@ FLAT_DOCK_IDS.forEach((id) => {
 });
 const DOCK_TOP = 66, DOCK_GAP = 10, DOCK_MARGIN = 14, DOCK_KEEP = 48;
 
-const floatingLayout = () => matchMedia("(max-width: 820px), (max-height: 620px)").matches === false;
+/* Phone-style layout: narrow windows, or short touch screens (landscape phones). Must match the CSS media query in
+   the "MOBILE" section of app.css. Short windows with a mouse keep the desktop layout. */
+const MOBILE_Q = "(max-width: 820px), (max-height: 620px) and (pointer: coarse)";
+const floatingLayout = () => matchMedia(MOBILE_Q).matches === false;
 
 /** Stack every card that has not been dragged, wrapping into a new column
     to the left when the current one would run off the bottom. When the
@@ -395,6 +399,7 @@ function formatBlocked(id) {
 function resize() {
   S.dpr = Math.min(window.devicePixelRatio || 1, 3);
   const prev = { w: S.vw, h: S.vh };
+  const before = (S.img && S.locked && S.vw > 0 && S.vh > 0) ? box() : null;   // the centred box, in the old work area
   S.vw = stage.clientWidth;
   S.vh = stage.clientHeight;
   stage.width  = Math.round(S.vw * S.dpr);
@@ -403,27 +408,67 @@ function resize() {
     const kx = S.vw / prev.w, ky = S.vh / prev.h;
     S.box = { x: S.box.x * kx, y: S.box.y * ky, w: S.box.w * kx, h: S.box.h * ky };
   }
+  if (before && S.vw > 0 && S.vh > 0) reanchor(before);   // keep the crop identical when the work area changes
   draw();
   updateReadouts();
   relayout();
 }
 new ResizeObserver(resize).observe(stage);
 
+/** The visible height the centred box lives in: the canvas minus whatever a phone pop-up currently covers. */
+function workH() { return Math.max(120, S.vh - S.inset); }
+
+/** The centred box is sized and placed from the work area, so when the area changes (window resize, pop-up opening) scale and
+    move the photo with it. Otherwise the same box would suddenly frame different pixels. `before` is the box in the old area. */
+function reanchor(before) {
+  const after = box();
+  const next = Math.min(Math.max(S.scale * (after.w / before.w), minScale()), MAX_SCALE), k = next / S.scale;
+  const c0 = { x: before.x + before.w / 2, y: before.y + before.h / 2 }, c1 = { x: after.x + after.w / 2, y: after.y + after.h / 2 };
+  if (isFinite(k) && k > 0) { S.tx = c1.x + k * (S.tx - c0.x); S.ty = c1.y + k * (S.ty - c0.y); S.scale = next; }
+}
+
+let insetAnim = 0;
+function applyInset(v) {
+  const dv = v - S.inset;
+  if (!dv) return;
+  const before = (S.img && S.locked) ? box() : null;
+  S.inset = v;
+  if (S.img) {
+    if (before) reanchor(before);
+    else { if (S.box) S.box.y -= dv / 2; S.ty -= dv / 2; }   // free box: lift box and photo together
+  }
+  draw();
+}
+/** Glide the view clear of a pop-up (or back). Nothing is resized or reallocated: only the view moves, and the crop never changes. */
+function setInset(target, animate = true) {
+  cancelAnimationFrame(insetAnim);
+  const from = S.inset, dist = target - from;
+  if (!dist) return;
+  if (!animate || matchMedia("(prefers-reduced-motion: reduce)").matches) { applyInset(target); updateReadouts(); return; }
+  const t0 = performance.now(), dur = 260;
+  const step = (now) => {
+    const t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);   // ease-out cubic
+    applyInset(from + dist * e);
+    if (t < 1) insetAnim = requestAnimationFrame(step); else updateReadouts();
+  };
+  insetAnim = requestAnimationFrame(step);
+}
+
 /** The centred box at 100% size — the ceiling that "Size" and handle-drag
     resizing both scale down from. */
 function fullBox() {
-  const availW = S.vw * 0.92, availH = S.vh * 0.92;
+  const availW = S.vw * 0.92, availH = workH() * 0.92;
   const a = S.aspect || 1;
   let w = availW, h = w / a;
   if (h > availH) { h = availH; w = h * a; }
-  return { x: (S.vw - w) / 2, y: (S.vh - h) / 2, w, h };
+  return { x: (S.vw - w) / 2, y: (workH() - h) / 2, w, h };
 }
 
 function box() {
   if (!S.locked) return S.box;
   const f = fullBox(), k = S.sizePct / 100;
   const w = f.w * k, h = f.h * k;
-  return { x: (S.vw - w) / 2, y: (S.vh - h) / 2, w, h };
+  return { x: (S.vw - w) / 2, y: (workH() - h) / 2, w, h };
 }
 
 function radiusOf(w, h) {
@@ -447,7 +492,7 @@ function traceShape(c, x, y, w, h, r) {
 
 function fitScale() {
   if (!S.img) return 1;
-  return Math.min((S.vw - 96) / S.img.width, (S.vh - 96) / S.img.height);
+  return Math.min((S.vw - 96) / S.img.width, (workH() - 96) / S.img.height);
 }
 function fillScale() {
   if (!S.img) return 1;
@@ -464,7 +509,7 @@ function setScale(next, anchorX, anchorY) {
   if (!S.img) return;
   const clamped = Math.min(Math.max(next, minScale()), MAX_SCALE);
   const ax = anchorX === undefined ? S.vw / 2 : anchorX;
-  const ay = anchorY === undefined ? S.vh / 2 : anchorY;
+  const ay = anchorY === undefined ? workH() / 2 : anchorY;
   S.tx = ax - (ax - S.tx) * (clamped / S.scale);
   S.ty = ay - (ay - S.ty) * (clamped / S.scale);
   S.scale = clamped;
@@ -491,7 +536,7 @@ const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValu
    positions are un-rotated by S.view first (localPoint). Photo angle on screen = rel + view; box angle = view.
    ========================================================================== */
 const DEG = Math.PI / 180;
-function stageC() { return { x: S.vw / 2, y: S.vh / 2 }; }
+function stageC() { return { x: S.vw / 2, y: workH() / 2 }; }
 function rotPt(p, ang, c) {
   const cos = Math.cos(ang), sin = Math.sin(ang), dx = p.x - c.x, dy = p.y - c.y;
   return { x: c.x + dx * cos - dy * sin, y: c.y + dx * sin + dy * cos };
@@ -886,7 +931,8 @@ async function loadFile(file) {
     S.name = (file.name || "image").replace(/\.[^.]+$/, "") || "image";
     S.filenameEdited = false;   // a new source image gets a fresh default name
     emptyEl.hidden = true;
-    $("govt-wrap").hidden = false;   // the government presets only make sense once there is a photo
+    $("govt-wrap").hidden = false;
+    $("m-toolbar").hidden = false;   // the phone layout's control strip   // the government presets only make sense once there is a photo
     S.rel = 0; S.view = 0; syncRotateUI();
     docks.hidden = false;
     zoombar.hidden = false;
@@ -1031,7 +1077,7 @@ function updateCursor(p) {
     Size slider — the box stays centred and at the locked aspect, only its
     scale changes, so this and the slider stay in sync either way. */
 function resizeCentered(handle, p) {
-  const cx = S.vw / 2, cy = S.vh / 2;
+  const cx = S.vw / 2, cy = workH() / 2;
   const full = fullBox();
   const dx = Math.abs(p.x - cx), dy = Math.abs(p.y - cy);
   let scale;
@@ -1680,6 +1726,28 @@ function syncRotateUI() {
     : "Turns the box over the photo, which stays put. Keys: [ and ] (Shift for 5\u00b0).";
 }
 $("rot").addEventListener("input", () => setAngle(rotTarget, Number($("rot").value)));
+/* Click the angle readout to type an exact value in place: Enter or clicking away applies it, Esc cancels. Values wrap into -180..180. */
+$("rot-val").addEventListener("click", () => {
+  if (!S.img) return;
+  const btn = $("rot-val"), inp = document.createElement("input");
+  Object.assign(inp, { type: "number", step: "0.1", min: "-180", max: "180", className: "val-input", inputMode: "decimal" });
+  inp.value = Math.round(curAngle() * 10) / 10;
+  inp.setAttribute("aria-label", "Angle in degrees");
+  btn.replaceWith(inp); inp.focus(); inp.select();
+  let done = false;
+  const finish = (apply) => {
+    if (done) return; done = true;
+    const v = parseFloat(inp.value);
+    inp.replaceWith(btn);
+    if (apply && isFinite(v)) setAngle(rotTarget, normDeg(v)); else syncRotateUI();
+  };
+  inp.addEventListener("keydown", (e) => {
+    e.stopPropagation();   // typing must not trigger the photo shortcuts or close the pop-up
+    if (e.key === "Enter") { e.preventDefault(); finish(true); }
+    else if (e.key === "Escape") { e.preventDefault(); finish(false); }
+  });
+  inp.addEventListener("blur", () => finish(true));
+});
 $("rot-ccw").onclick = () => setAngle(rotTarget, normDeg(curAngle() - 90));
 $("rot-cw").onclick = () => setAngle(rotTarget, normDeg(curAngle() + 90));
 $("rot-reset").onclick = () => setAngle(rotTarget, 0);

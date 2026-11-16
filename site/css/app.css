@@ -543,21 +543,7 @@ body.dragover .drop-veil { display: block; }
 /* ============================================================================
    8. NARROW SCREENS — cards collapse into one scrolling sheet, no dragging
    ========================================================================== */
-@media (max-width: 820px), (max-height: 620px) {
-  #docks {
-    position: fixed; left: 8px; right: 8px; bottom: 38px; z-index: 15;
-    max-height: 58dvh; overflow-y: auto; overscroll-behavior: contain;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .dock { position: static !important; width: auto !important; }
-  .dock-head { cursor: pointer; }
-  .dock-head .grip { display: none; }
-  .zoombar { bottom: auto; top: 62px; left: 8px; }
-  .export-pop {
-    left: 8px !important; right: 8px !important; top: auto !important; bottom: 38px !important;
-    width: auto; max-height: 70dvh;
-  }
-}
+/* Phone layout: see the MOBILE section at the end of this file. */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
@@ -724,3 +710,87 @@ a.brand-credit:focus-visible { outline: 2px solid var(--accent); outline-offset:
 .credit-pop b a { color: var(--text); text-decoration: none; }
 .credit-pop b a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 @media (max-width: 700px) { .foot-by { display: none; } }
+
+/* ============================================================================
+   11. MOBILE (v0.3.2). One page, two presentations: on phones the photo gets the whole work area, the controls live in
+   a tabbed bottom sheet opened from a bubble, and the action buttons sit in a row under the brand. The media query must
+   match MOBILE_Q in app.js. --m-top / --m-bot / --m-tool are measured by boot.js.
+   ========================================================================== */
+.m-toolbar, .m-only { display: none; }
+@media (max-width: 820px), (max-height: 620px) and (pointer: coarse) {
+  :root { --m-top: 100px; --m-bot: 32px; --m-tool: 0px; }
+
+  /* The canvas is the work area only: below the top bars, above the footer and (when open) the sheet. */
+  #stage { inset: auto; top: var(--m-top); left: 0; width: 100%;
+           height: calc(100vh - var(--m-top) - var(--m-bot) - var(--m-tool)); height: calc(100dvh - var(--m-top) - var(--m-bot) - var(--m-tool)); }
+
+  /* Row 1: the brand. Row 2: the actions. */
+  .topbar { height: auto; flex-wrap: wrap; row-gap: 6px; padding: 6px 10px 8px; background: var(--bg);
+            border-bottom: 1px solid var(--border); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .brand { flex: 1 0 100%; margin-right: 0; }
+  .topbar > .btn, .topbar > .govt-wrap { flex: 1 1 0; min-width: 0; }
+  .topbar > .btn, .govt-wrap .govt-btn { width: 100%; padding: 0 6px; gap: 5px; font-size: 12.5px; }
+  .govt-btn .lbl { display: inline; }
+  #reset-layout { display: none; }
+  .govt-menu { left: 0; right: auto; width: min(290px, calc(100vw - 20px)); }
+  .empty-state { top: var(--m-top); bottom: var(--m-bot); }
+
+  .zoombar { display: none !important; }
+
+  /* Controls: a strip of the main controls above the footer; pressing one pops its options up above it, like a speech bubble
+     pointing at the button. The photo stays visible and draggable above the pop-up. */
+  .m-toolbar { display: flex; position: fixed; left: 0; right: 0; bottom: var(--m-bot); z-index: 22; gap: 2px; padding: 4px 6px;
+               background: var(--surface-solid); border-top: 1px solid var(--border-strong); }
+  .m-toolbar[hidden] { display: none; }
+  .m-toolbar button { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px 5px;
+                       border: 0; border-radius: 10px; background: transparent; color: var(--text-dim); font-size: 11px; font-weight: 600; cursor: pointer; }
+  .m-toolbar button svg { width: 21px; height: 21px; }
+  .m-toolbar button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+  /* The pop-up: a frosted card that fades and rises out of the pressed button. It stays laid out (so its height can be measured) and is
+     only hidden visually. */
+  #docks { display: flex; visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(14px) scale(.96); transform-origin: var(--caret-x, 50%) 100%;
+           position: fixed; left: 10px; right: 10px; bottom: calc(var(--m-bot) + var(--m-tool) + 10px); top: auto; z-index: 21; flex-direction: column;
+           padding: 6px 12px 10px; border: 1px solid color-mix(in srgb, var(--border-strong) 80%, transparent); border-radius: 18px;
+           background: color-mix(in srgb, var(--surface-solid) 78%, transparent); backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6);
+           box-shadow: 0 18px 40px -12px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.25);
+           transition: opacity .2s ease, transform .3s cubic-bezier(.2,.9,.25,1.05), visibility 0s linear .3s; }
+  body.sheet-open #docks { visibility: visible; opacity: 1; pointer-events: auto; transform: none; transition: opacity .2s ease, transform .3s cubic-bezier(.2,.9,.25,1.05), visibility 0s; }
+  #docks::after { content: ""; position: absolute; bottom: -7px; left: var(--caret-x, 50%); width: 12px; height: 12px; transform: translateX(-50%) rotate(45deg);
+                  background: color-mix(in srgb, var(--surface-solid) 78%, transparent); border-right: 1px solid color-mix(in srgb, var(--border-strong) 80%, transparent);
+                  border-bottom: 1px solid color-mix(in srgb, var(--border-strong) 80%, transparent); transition: left .25s cubic-bezier(.2,.9,.25,1); }
+  #docks .dock { display: none; position: static !important; width: auto !important; padding: 0; border: 0; background: transparent;
+                  box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  #docks[data-tab="shape"] #dock-shape, #docks[data-tab="ratio"] #dock-ratio,
+  #docks[data-tab="frame"] #dock-frame, #docks[data-tab="rotate"] #dock-rotate { display: block; }
+  #docks .dock-head { display: none; }
+  #docks .dock .dock-body { display: block !important; padding: 2px 2px 4px; max-height: 38vh; max-height: 38dvh; overflow-y: auto; overscroll-behavior: contain; }
+  .m-only { display: flex; margin-top: 10px; }
+  .m-only button { flex: 1; }
+
+  /* Footer: wraps so warnings are never cut off; its cards open above it. */
+  .statusbar { height: auto; min-height: 32px; padding: 5px 10px; background: var(--surface-solid); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .status-line { white-space: normal; line-height: 1.3; }
+  .foot-by { display: none; }
+  .credit-pop, .help-pop { position: fixed; left: 10px; right: 10px; width: auto; max-width: none; bottom: calc(var(--m-bot) + 8px); }
+  .help-pop { max-height: 72vh; max-height: 72dvh; }
+  .export-pop { left: 8px !important; right: 8px !important; top: auto !important; bottom: var(--m-bot) !important; z-index: 36; width: auto; max-height: 72vh; max-height: 72dvh; }
+  .toast { bottom: calc(var(--m-bot) + var(--m-tool) + 10px); }
+}
+
+@media (max-width: 820px), (max-height: 620px) and (pointer: coarse) {
+  .m-toolbar button { transition: background .22s ease, color .22s ease, transform .12s ease; }
+  .m-toolbar button:active { transform: scale(.94); }
+  .m-toolbar button svg { transition: transform .25s cubic-bezier(.2,.9,.25,1.2); }
+  .m-toolbar button[aria-pressed="true"] svg { transform: translateY(-1px) scale(1.1); }
+  #docks .dock { animation: dock-in .22s ease both; }
+}
+@keyframes dock-in { from { opacity: 0; transform: translateY(5px); } }
+
+/* The angle readout doubles as a number field: a quiet dotted underline says "click to type". */
+.val-edit { padding: 0 2px; border: 0; border-bottom: 1px dotted var(--text-faint); background: none; cursor: text; color: var(--text);
+  font: inherit; font-weight: 600; font-variant-numeric: tabular-nums; }
+.val-edit:hover, .val-edit:focus-visible { color: var(--accent); border-bottom-color: var(--accent); }
+.val-input { width: 72px; height: 24px; padding: 0 6px; border: 1px solid var(--accent); border-radius: 6px; background: var(--track); color: var(--text);
+  font: 600 13px/1 inherit; font-variant-numeric: tabular-nums; text-align: right; box-shadow: 0 0 0 3px var(--accent-soft); }
+.val-input:focus { outline: none; }
