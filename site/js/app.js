@@ -29,7 +29,7 @@ const APP_VERSION = "v0.3.2";
 const BRAND_LINKS = {
   about:   "https://mehedimaruf.com",
   contact: "mailto:slicedevil@mehedimaruf.com",
-  source:  "https://github.com/BlesseDevil/SliceDevil",   // AGPL: where the running code can be obtained
+  source:  "https://github.com/BlesseDevil/slicedevil",   // AGPL: where the running code can be obtained
   donate:  "",   // e.g. "https://ko-fi.com/<you>"
 };
 

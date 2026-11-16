@@ -11,7 +11,7 @@ Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/li
 
 Crop any photo to any shape, right in your browser. Free, private, works on phones and computers.
 
-**Try it:** <https://crop.mehedimaruf.com> &middot; **Source:** <https://github.com/BlesseDevil/SliceDevil> &middot; By [Mehedi Maruf (BlesseDevil)](https://mehedimaruf.com) &middot; [project page](https://mehedimaruf.com/projects/slicedevil)
+**Try it:** <https://crop.mehedimaruf.com> &middot; **Source:** <https://github.com/BlesseDevil/slicedevil> &middot; By [Mehedi Maruf (BlesseDevil)](https://mehedimaruf.com) &middot; [project page](https://mehedimaruf.com/projects/slicedevil)
 
 ## Features
 
