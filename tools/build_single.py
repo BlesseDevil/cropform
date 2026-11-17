@@ -59,6 +59,9 @@ def check_versions() -> str:
     missing = [p for p in re.findall(r'"([^"]+)"', pre.group(1)) if p != "./" and not (SITE / p).exists()]
     if missing:
         sys.exit(f"build: sw.js PRECACHE lists files that do not exist: {missing}")
+    stale = [u for u in re.findall(r'(?:src|href)="((?:js|css)/[^"?]+\?v=[^"]*)"', read(SITE / "index.html")) if not u.endswith("?v=" + version)]
+    if stale:
+        sys.exit(f"build: index.html asset URLs do not carry ?v={version}: {stale}")
     return version
 
 
@@ -80,8 +83,8 @@ def inline(html: str) -> str:
             sys.exit(f"build: {m.group(1)} contains a closing script tag and cannot be inlined")
         return "<script>\n" + body + "\n</script>"
 
-    html = re.sub(r'<link rel="stylesheet" href="(css/[^"]+)">', css, html)
-    html = re.sub(r'<script src="(js/[^"]+)"></script>', js, html)
+    html = re.sub(r'<link rel="stylesheet" href="(css/[^"?]+)(?:\?[^"]*)?">', css, html)
+    html = re.sub(r'<script src="(js/[^"?]+)(?:\?[^"]*)?"></script>', js, html)
     html = re.sub(r'<link rel="manifest"[^>]*>\n?', "", html)
     html = re.sub(r'(?<![\w/.-])((?:assets|icons)/[\w.-]+\.(?:png|ico))', lambda m: data_uri(m.group(1)), html)
     return html

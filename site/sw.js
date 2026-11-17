@@ -11,19 +11,31 @@
 // CACHE must carry the app version. tools/build_single.py refuses to build if it does not match APP_VERSION in
 // js/app.js, so a version bump cannot forget it. A new cache name means a fresh precache; old caches are deleted
 // on activate.
-const CACHE = "cropform-v0.3.4";
+const CACHE = "cropform-v0.4.0";
 
 const PRECACHE = [
   "./", "index.html", "manifest.webmanifest",
   "css/portal.css", "css/app.css",
-  "js/encoders.js", "js/app.js", "js/portal.js", "js/pwa.js", "js/boot.js",
+  "js/encoders.js", "js/app.js", "js/portal.js", "js/pwa.js", "js/stats.js", "js/boot.js",
   "assets/mark-light.png", "assets/brand-light.png", "assets/brand-dark.png",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png",
   "icons/apple-touch-icon.png", "icons/favicon-32.png", "icons/favicon.ico",
 ];
 
+// GitHub Pages' CDN keeps files for hours, so every request carries ?v=<version> to reach the newest release at once.
+// Entries are stored under the plain path, which is what the fetch handler below looks them up by.
+async function precache(cache) {
+  const v = CACHE.slice(CACHE.lastIndexOf("-v") + 2);
+  await Promise.all(PRECACHE.map(async (u) => {
+    const res = await fetch(u + "?v=" + v, { cache: "reload" });
+    if (!res.ok) throw new Error("precache " + u + " " + res.status);
+    const k = new URL(u, self.location.href);
+    await cache.put(k.origin + k.pathname, res);
+  }));
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((c) => precache(c)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {

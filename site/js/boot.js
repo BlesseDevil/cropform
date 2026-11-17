@@ -24,6 +24,7 @@
 
   const img = document.querySelector("#tile img");
   document.querySelector(".ring-logo").src = img.src; // reuse the splash mark (the single-file build inlines it once)
+  Stats.start();   // anonymous visit counting; a no-op unless configured and on the live site
   Portal.run([
     { label: "Loading the mark…", lines: ["Loading the mark…", "Lighting the portal…"],
       run: async () => { try { await img.decode(); } catch (_) { /* decode is cosmetic */ } } },

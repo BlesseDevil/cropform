@@ -86,6 +86,9 @@ design/    local previews used to pick the splash look
 - **Run locally:** `python -m http.server 8751`, then open <http://localhost:8751/site/>.
 - **Single-file copy** (runs offline from a double-click): `python tools/build_single.py` creates `releases/` and writes the
   HTML there. It only runs when you run it, and its output isn't committed. Add `--check` to validate without writing.
+- **Usage counting:** `site/js/stats.js` loads GoatCounter and Cloudflare Web Analytics, only on the live host and never when
+  Do Not Track is on. Set the site code and token in its `CONFIG`; an empty value keeps that service off. The header counter
+  needs *Allow adding visitor counts on your website* turned on in GoatCounter's settings.
 - **Versions:** `APP_VERSION` in `site/js/app.js` and the cache name in `site/sw.js` must match; the build refuses otherwise.
 - **Deploy:** GitHub Pages serves `site/` via `.github/workflows/pages.yml` (Pages source: GitHub Actions, domain
   `crop.mehedimaruf.com`, Enforce HTTPS). DNS: a `CNAME` for `crop` pointing at `blessedevil.github.io`.

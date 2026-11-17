@@ -20,7 +20,7 @@ const docks   = $("docks");
 const zoombar = $("zoombar");
 const emptyEl = $("empty");
 
-const APP_VERSION = "v0.3.4";
+const APP_VERSION = "v0.4.0";
 
 /* ---------------------------------------------------------------------------
    BRAND LINKS — fill these in to activate the brand menu items. Left empty,
@@ -1654,6 +1654,7 @@ $("export-confirm").addEventListener("click", async () => {
     }
     const filename = sanitizeFilename($("filename-input").value) + "." + (filename_ext || f.ext);
     await saveBlob(blob, filename, blob.type);
+    if (typeof Stats !== "undefined") Stats.event("export");
     toast("Saved " + filename + "  ·  " + (S.govt ? (blob.size / 1000).toFixed(1) + " KB (limit " + S.govt.maxKB + " KB)" + (govtState === "small" ? " \u2014 below the recommended " + S.govt.recMin + "\u2013" + S.govt.recMax + " KB (still accepted)" : "") : prettyBytes(blob.size)));
   } catch (err) {
     toast((err && err.message ? err.message : "Export failed") + ".", true);

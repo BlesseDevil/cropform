@@ -60,7 +60,7 @@ const Pwa = (() => {
         reloaded = true;
         location.reload();
       });
-      await navigator.serviceWorker.register("sw.js");
+      await navigator.serviceWorker.register("sw.js?v=" + APP_VERSION);
       await navigator.serviceWorker.ready;
       return "works offline";
     } catch (e) {
