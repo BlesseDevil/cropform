@@ -6,12 +6,12 @@
 // and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
 // Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
 "use strict";
-// Service worker: makes SliceDevil work offline after the first load. Everything is same-origin and static.
+// Service worker: makes CropForm work offline after the first load. Everything is same-origin and static.
 //
 // CACHE must carry the app version. tools/build_single.py refuses to build if it does not match APP_VERSION in
 // js/app.js, so a version bump cannot forget it. A new cache name means a fresh precache; old caches are deleted
 // on activate.
-const CACHE = "slicedevil-v0.3.2";
+const CACHE = "cropform-v0.3.3";
 
 const PRECACHE = [
   "./", "index.html", "manifest.webmanifest",
@@ -29,7 +29,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("slicedevil-") && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => (k.startsWith("cropform-") || k.startsWith("slicedevil-")) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

@@ -7,25 +7,32 @@ Please don't take it personally. Try blessedevil@duck.com or mehedimaruf@duck.co
 and maybe BUY HIM a COFFE or a DOMAIN. Thank you... :')
 Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
 -->
-# SliceDevil
+# CropForm
 
-Crop any photo to any shape, right in your browser. Free, private, works on phones and computers.
+**Fast, browser-based crop toolkit for everyone.**
 
-**Try it:** <https://crop.mehedimaruf.com> &middot; **Source:** <https://github.com/BlesseDevil/slicedevil> &middot; By [Mehedi Maruf (BlesseDevil)](https://mehedimaruf.com) &middot; [project page](https://mehedimaruf.com/projects/slicedevil)
+Crop any photo to a circle, square, rounded shape or any rectangle, then save it as PNG, WebP, JPEG, ICO or SVG.
+It runs in your browser on phones and computers. It's free, and your pictures never leave your device.
 
-## Features
+**Try it now: <https://crop.mehedimaruf.com>**
+
+## How to use it
+
+1. Open the site and drop in a picture (or paste it, or press **Open**).
+2. Pick a shape and move or zoom the photo until it looks right.
+3. Press **Export**.
+
+To install it like an app, use the **Install** button or your browser's install option (on iPhone: Share, then Add to
+Home Screen). Once installed it works offline.
+
+## What you can do
 
 - **Any shape:** circle, ellipse, square, rounded rectangle, pill or any rectangle.
 - **Any format:** PNG, WebP, JPEG, ICO or SVG, at any size.
-- **Government forms:** one-tap **Photo** and **Signature** presets that fit the JPEG size limits.
+- **Government forms:** one-tap **Photo** and **Signature** presets that fit the usual size limits.
 - **Rotate** the photo or the crop box, by slider or by typing an exact angle.
-- **Private:** nothing is uploaded. Installable, and works offline.
+- **Private:** nothing is uploaded, ever.
 - **Phone and desktop:** one page, laid out for each. Light, dark or system theme.
-
-## Quick start
-
-Open the site, then drop in a picture (or paste it, or press **Open**), shape the crop and press **Export**.
-To install it, use the **Install** button or your browser's install option (on iPhone: Share, then Add to Home Screen).
 
 ## Government form presets
 
@@ -39,18 +46,7 @@ Press **Govt. form** (it appears once a photo is loaded):
 Export tunes the JPEG quality to land in the "aims for" range and never above the max. Sizes are decimal KB (1 KB = 1000
 bytes). Always check the rules on your form.
 
-## Shortcuts
-
-| Key | Action |
-|---|---|
-| <kbd>F</kbd> / <kbd>C</kbd> | Fit the photo / fill the crop box |
-| <kbd>0</kbd>, <kbd>+</kbd> / <kbd>−</kbd> | Zoom to 100%, zoom in / out |
-| Arrow keys, <kbd>Space</kbd> + drag | Pan |
-| <kbd>[</kbd> / <kbd>]</kbd> | Rotate 1° (hold <kbd>Shift</kbd> for 5°) |
-| <kbd>Ctrl</kbd>+<kbd>V</kbd> | Paste an image |
-| <kbd>Esc</kbd> | Close the open panel |
-
-## Supported formats
+## Which format should I pick?
 
 | Format | Transparency | Best for |
 |---|:---:|---|
@@ -63,7 +59,23 @@ bytes). Always check the rules on your form.
 
 HEIC isn't supported.
 
-## Development
+## Keyboard shortcuts
+
+| Key | Action |
+|---|---|
+| <kbd>F</kbd> / <kbd>C</kbd> | Fit the photo / fill the crop box |
+| <kbd>0</kbd>, <kbd>+</kbd> / <kbd>−</kbd> | Zoom to 100%, zoom in / out |
+| Arrow keys, <kbd>Space</kbd> + drag | Pan |
+| <kbd>[</kbd> / <kbd>]</kbd> | Rotate 1° (hold <kbd>Shift</kbd> for 5°) |
+| <kbd>Ctrl</kbd>+<kbd>V</kbd> | Paste an image |
+| <kbd>Esc</kbd> | Close the open panel |
+
+---
+
+## For developers
+
+Source: <https://github.com/BlesseDevil/cropform> &middot; By [Mehedi Maruf (BlesseDevil)](https://mehedimaruf.com) &middot;
+[project page](https://mehedimaruf.com/projects/cropform)
 
 ```
 site/      the website, served as-is (no build step)

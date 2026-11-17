@@ -8,12 +8,12 @@
 # Licensed under the GNU AGPL v3 or any later version; see <https://www.gnu.org/licenses/>. No warranty.
 # The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) and are not covered by the AGPL.
 """
-Build the single-file release of SliceDevil from the deployable site/ folder.
+Build the single-file release of CropForm from the deployable site/ folder.
 
 The website (site/) is the source of truth and needs no build step. This script additionally produces one
 self-contained HTML file that runs by double-click from file:// with no server, for people who want that.
 
-    python tools/build_single.py            # writes releases/slicedevil-v<version>.html
+    python tools/build_single.py            # writes releases/cropform-v<version>.html
     python tools/build_single.py --check    # validate only, write nothing
 
 What it does:
@@ -50,7 +50,7 @@ def check_versions() -> str:
         sys.exit("build: could not find APP_VERSION in site/js/app.js")
     version = m.group(1)
     sw_src = read(SITE / "sw.js")
-    sw = re.search(r'^const CACHE = "slicedevil-v([0-9.]+)"', sw_src, re.M)
+    sw = re.search(r'^const CACHE = "cropform-v([0-9.]+)"', sw_src, re.M)
     if not sw or sw.group(1) != version:
         sys.exit(f"build: sw.js cache name ({sw.group(1) if sw else 'missing'}) does not match APP_VERSION ({version})")
     pre = re.search(r"^const PRECACHE = \[(.*?)\];", sw_src, re.M | re.S)
@@ -103,7 +103,7 @@ def main() -> None:
         print(f"build: OK, v{version}, {len(out):,} chars, nothing written")
         return
     RELEASES.mkdir(exist_ok=True)
-    dest = RELEASES / f"slicedevil-v{version}.html"
+    dest = RELEASES / f"cropform-v{version}.html"
     with open(dest, "w", encoding="utf-8", newline="\n") as f:
         f.write(out)
     print(f"build: wrote {dest} ({dest.stat().st_size:,} bytes), v{version}")

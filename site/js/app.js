@@ -20,7 +20,7 @@ const docks   = $("docks");
 const zoombar = $("zoombar");
 const emptyEl = $("empty");
 
-const APP_VERSION = "v0.3.2";
+const APP_VERSION = "v0.3.3";
 
 /* ---------------------------------------------------------------------------
    BRAND LINKS — fill these in to activate the brand menu items. Left empty,
@@ -28,8 +28,8 @@ const APP_VERSION = "v0.3.2";
    ------------------------------------------------------------------------- */
 const BRAND_LINKS = {
   about:   "https://mehedimaruf.com",
-  contact: "mailto:slicedevil@mehedimaruf.com",
-  source:  "https://github.com/BlesseDevil/slicedevil",   // AGPL: where the running code can be obtained
+  contact: "mailto:cropform@mehedimaruf.com",
+  source:  "https://github.com/BlesseDevil/cropform",   // AGPL: where the running code can be obtained
   donate:  "",   // e.g. "https://ko-fi.com/<you>"
 };
 
@@ -173,7 +173,7 @@ prefersDark.addEventListener("change", () => {
 
 $("brand-credit").innerHTML =
   APP_VERSION + " <i>&middot;</i> &copy; BlesseDevil <i>|</i> Mehedi Maruf";
-document.title = "SliceDevil " + APP_VERSION;
+document.title = "CropForm " + APP_VERSION;
 
 /* ============================================================================
    BRAND MENU  — About / Contact / Donate
@@ -831,11 +831,11 @@ function updateReadouts() {
   refreshStatus();
 }
 
-/** {original}-SliceDeviled_{w}x{h}, kept in sync until the user edits it. */
+/** {original}-CropForm_{w}x{h}, kept in sync until the user edits it. */
 function updateFilenameDefault() {
   if (!S.img) return;
   const d = outputDims();
-  const base = S.name + "-SliceDeviled_" + d.w + "x" + d.h;
+  const base = S.name + "-CropForm_" + d.w + "x" + d.h;
   $("filename-ext-readout").textContent = "." + fmt(S.format).ext;
   if (!S.filenameEdited) $("filename-input").value = base;
 }
@@ -843,7 +843,7 @@ function updateFilenameDefault() {
 /** Strip characters invalid across Windows/macOS/Linux filenames. */
 function sanitizeFilename(name) {
   const cleaned = name.replace(/[\\/:*?"<>|\x00-\x1f]/g, "").trim();
-  return cleaned || S.name + "-SliceDeviled";
+  return cleaned || S.name + "-CropForm";
 }
 
 /** Keep the custom H/V boxes coherent with the lock and the crop ratio. */

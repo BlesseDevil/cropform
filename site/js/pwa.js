@@ -32,7 +32,7 @@ const Pwa = (() => {
   }
 
   addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; refresh(); });
-  addEventListener("appinstalled", () => { deferred = null; refresh(); note("SliceDevil installed."); });
+  addEventListener("appinstalled", () => { deferred = null; refresh(); note("CropForm installed."); });
   matchMedia("(display-mode: standalone)").addEventListener("change", refresh);
 
   if (btn) btn.addEventListener("click", async () => {

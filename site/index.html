@@ -13,10 +13,15 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>SliceDevil</title>
+<title>CropForm &ndash; Fast, browser-based image crop toolkit for everyone</title>
 <meta name="author" content="Mehedi Maruf">
 <link rel="canonical" href="https://crop.mehedimaruf.com/">
-<meta name="description" content="Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG. Runs entirely in your browser; nothing is uploaded.">
+<meta name="description" content="CropForm is a fast, browser-based crop toolkit for everyone. Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG, with government photo and signature presets. Free, private, nothing is uploaded.">
+<meta name="keywords" content="image cropper, crop photo online, circle crop, round crop, passport photo crop, signature crop, PNG, WebP, JPEG, ICO, SVG, offline PWA">
+<meta property="og:title" content="CropForm">
+<meta property="og:description" content="Fast, browser-based crop toolkit for everyone. Any shape, any format, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://crop.mehedimaruf.com/">
 <meta name="theme-color" content="#f6efe3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d0609" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
@@ -25,7 +30,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SliceDevil">
+<meta name="apple-mobile-web-app-title" content="CropForm">
 <link rel="stylesheet" href="css/portal.css">
 <link rel="stylesheet" href="css/app.css">
 </head>
@@ -43,7 +48,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
     </div>
     <button class="tile" id="tile" type="button" aria-label="Change theme"><img src="assets/mark-light.png" alt="" width="346" height="340"></button>
   </div>
-  <h1 class="name">SliceDevil</h1>
+  <h1 class="name">CropForm</h1>
   <p class="sub">by BlesseDevil</p>
   <div class="trail" id="trail" aria-hidden="true"></div>
   <div class="now"><span id="step">Starting&hellip;</span><span id="pct">0%</span></div>
@@ -51,7 +56,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
   <p class="legal">&copy; 2026 Mehedi Maruf<br>Licensed AGPL-3.0-or-later</p>
   <button class="skip" id="skip" type="button">Skip</button>
 </main>
-<noscript><p style="padding:2rem;font:16px system-ui">SliceDevil needs JavaScript to crop images in your browser.</p></noscript>
+<noscript><p style="padding:2rem;font:16px system-ui">CropForm needs JavaScript to crop images in your browser.</p></noscript>
 
 <canvas id="stage"></canvas>
 <div class="drop-veil"></div>
@@ -67,7 +72,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
     </button>
     <div class="brand-id">
       <button class="brand-btn" id="brand-btn" aria-haspopup="menu" aria-expanded="false">
-        <span class="brand-name">SliceDevil</span>
+        <span class="brand-name">CropForm</span>
         <svg class="brand-chev" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round"/>
@@ -106,7 +111,7 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
   <button class="btn ghost" id="reset-layout" title="Return the panels to their default places" hidden>
     Reset layout
   </button>
-  <button class="btn" id="install-btn" title="Install SliceDevil as an app" hidden>
+  <button class="btn" id="install-btn" title="Install CropForm as an app" hidden>
     <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M8 2.5v7m0 0L5 6.5m3 3 3-3M3 12.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -467,9 +472,9 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
   <span class="status-line" id="status-line" role="status" aria-live="polite">Drop, paste or choose an image to begin</span>
   <a class="foot-by" href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer">by Mehedi Maruf (BlesseDevil)</a>
   <span class="help-wrap">
-    <button id="help-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="How to use SliceDevil">How to use</button>
-    <div class="credit-pop help-pop" id="help-pop" role="dialog" aria-label="How to use SliceDevil" hidden>
-      <p class="credit-title">How to use SliceDevil</p>
+    <button id="help-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="How to use CropForm">How to use</button>
+    <div class="credit-pop help-pop" id="help-pop" role="dialog" aria-label="How to use CropForm" hidden>
+      <p class="credit-title">How to use CropForm</p>
       <ol class="help-steps">
         <li><b>Load a photo.</b> Drop it anywhere, paste with Ctrl+V, click the circle, or press Open.</li>
         <li><b>Shape the crop.</b> Choose Rectangle or Ellipse, a ratio, and Centred or Free drag. Pan and zoom the photo behind the box.</li>
@@ -496,15 +501,15 @@ The mark images in site/assets/ are proprietary artwork (see LICENSE-ASSETS.md) 
   <span class="credit-wrap">
     <button id="credit-btn" type="button" aria-haspopup="dialog" aria-expanded="false" title="Credits and contact">Credits</button>
     <div class="credit-pop" id="credit-pop" role="dialog" aria-label="Credits and contact" hidden>
-      <p class="credit-title">SliceDevil <span id="credit-version"></span></p>
-      <p><b><a href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer">SliceDevil by Mehedi Maruf (BlesseDevil)</a></b></p>
+      <p class="credit-title">CropForm <span id="credit-version"></span></p>
+      <p><b><a href="https://mehedimaruf.com" target="_blank" rel="noopener noreferrer">CropForm by Mehedi Maruf (BlesseDevil)</a></b></p>
       <p class="credit-links">
         <a id="credit-site" target="_blank" rel="noopener noreferrer">mehedimaruf.com</a>
         <a id="credit-mail"></a>
-        <a href="https://mehedimaruf.com/projects/slicedevil" target="_blank" rel="noopener noreferrer">SliceDevil project page</a>
+        <a href="https://mehedimaruf.com/projects/cropform" target="_blank" rel="noopener noreferrer">CropForm project page</a>
         <a id="credit-source" target="_blank" rel="noopener noreferrer">Source code (AGPL-3.0)</a>
       </p>
-      <p class="credit-joke">Can't reach slicedevil@mehedimaruf.com?<br>
+      <p class="credit-joke">Can't reach cropform@mehedimaruf.com?<br>
         The domain probably expired because HE's TOO BROKE TO RENEW IT.<br>
         Please don't take it personally. Try <a href="mailto:mehedimaruf@duck.com">mehedimaruf@duck.com</a>
         or <a href="mailto:blessedevil@duck.com">blessedevil@duck.com</a> instead,

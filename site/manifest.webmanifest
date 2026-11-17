@@ -1,7 +1,7 @@
 {
-  "name": "SliceDevil",
-  "short_name": "SliceDevil",
-  "description": "Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG. Runs entirely in your browser.",
+  "name": "CropForm",
+  "short_name": "CropForm",
+  "description": "Fast, browser-based crop toolkit for everyone. Crop any image to any shape and export PNG, WebP, JPEG, ICO or SVG. Runs entirely in your browser.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

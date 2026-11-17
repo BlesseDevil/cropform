@@ -15,8 +15,8 @@ limited permission below.
 
 ## Limited permission
 
-You may use the **unmodified** mark, and only **alongside the credit** "SliceDevil by Mehedi Maruf (BlesseDevil)", to
-show where this software comes from, when you copy, host or redistribute SliceDevil (original or modified).
+You may use the **unmodified** mark, and only **alongside the credit** "CropForm by Mehedi Maruf (BlesseDevil)", to
+show where this software comes from, when you copy, host or redistribute CropForm (original or modified).
 
 You may **not**:
 - use the mark as the logo, icon or branding of your own product, service or fork;
