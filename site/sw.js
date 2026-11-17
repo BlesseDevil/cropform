@@ -11,7 +11,7 @@
 // CACHE must carry the app version. tools/build_single.py refuses to build if it does not match APP_VERSION in
 // js/app.js, so a version bump cannot forget it. A new cache name means a fresh precache; old caches are deleted
 // on activate.
-const CACHE = "cropform-v0.3.3";
+const CACHE = "cropform-v0.3.4";
 
 const PRECACHE = [
   "./", "index.html", "manifest.webmanifest",
@@ -23,7 +23,7 @@ const PRECACHE = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {

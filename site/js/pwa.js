@@ -51,6 +51,15 @@ const Pwa = (() => {
     if (!("serviceWorker" in navigator)) return "offline mode not supported here";
     if (!secure()) return "online only (needs https)";
     try {
+      // The shell is served cache-first, so right after a deploy the page you see is the previous version. When the
+      // new worker takes over (it skips waiting and claims clients), reload once so the new version shows at once.
+      const hadController = !!navigator.serviceWorker.controller;
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!hadController || reloaded) return;   // first install: nothing stale to replace
+        reloaded = true;
+        location.reload();
+      });
       await navigator.serviceWorker.register("sw.js");
       await navigator.serviceWorker.ready;
       return "works offline";

@@ -20,7 +20,7 @@ const docks   = $("docks");
 const zoombar = $("zoombar");
 const emptyEl = $("empty");
 
-const APP_VERSION = "v0.3.3";
+const APP_VERSION = "v0.3.4";
 
 /* ---------------------------------------------------------------------------
    BRAND LINKS — fill these in to activate the brand menu items. Left empty,
